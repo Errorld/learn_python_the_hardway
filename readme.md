@@ -11,6 +11,9 @@
 ### Exercise 9: Printing, Printing, Printing  
 ### Exercise 10: What Was That?  
 ### Exercise 11: Asking Questions  
+```python
+raw_input("> ")
+```
 ### Exercise 12: Prompting People  
 ### Exercise 13: Parameters, Unpacking, Variables  
 ```python
@@ -46,9 +49,19 @@ file.seek(offset[i, whence]) # os.SEEK_SET, os.SEEK_CUR, os.SEED_END
 ### Exercise 23: Read Some Code  
 ### Exercise 24: More Practice  
 ### Exercise 25: Even More Practice  
+```python
+import ex25
+def function():
+    """help doc"""
+if __name__ == "__main__"
+
+```
 ### Exercise 26: Congratulations, Take A Test!  
 ### Exercise 27: Memorizing Logic  
 ### Exercise 28: Boolean Practice  
+```python
+and>or
+```
 ### Exercise 29: What If  
 ### Exercise 30: Else And If  
 ### Exercise 31: Making Decisions  
