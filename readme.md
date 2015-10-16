@@ -20,11 +20,27 @@ print argv
 ```
 ### Exercise 14: Prompting And Passing  
 ### Exercise 15: Reading Files  
+```python
+#pydoc file
+type(f.read()) # <str>
+
+```
 ### Exercise 16: Reading And Writing Files  
 ### Exercise 17: More Files  
 ### Exercise 18: Names, Variables, Code, Functions  
+```python
+def function(*args, **kargs)
+# args = (1,2,3,*)
+# kwargs = {'x':1, 'y':2, *}
+```
+
 ### Exercise 19: Functions And Variables  
 ### Exercise 20: Functions And Files  
+
+```python
+file.seek(offset[i, whence]) # os.SEEK_SET, os.SEEK_CUR, os.SEED_END
+```
+
 ### Exercise 21: Functions Can Return Something  
 ### Exercise 22: What Do You Know So Far?  
 ### Exercise 23: Read Some Code  
