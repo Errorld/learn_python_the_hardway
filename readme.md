@@ -13,10 +13,10 @@
 ### Exercise 11: Asking Questions  
 ### Exercise 12: Prompting People  
 ### Exercise 13: Parameters, Unpacking, Variables  
-```
+```python
 from sys import argv
 print argv
-# [script, first, second]
+# [script, first, second, *]
 ```
 ### Exercise 14: Prompting And Passing  
 ### Exercise 15: Reading Files  
