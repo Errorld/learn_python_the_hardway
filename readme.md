@@ -70,11 +70,60 @@ and>or
 ### Exercise 34: Accessing Elements Of Lists  
 ### Exercise 35: Branches and Functions  
 ### Exercise 36: Designing and Debugging  
+```python
+if:
+    pass
+else:
+    die
+```
 ### Exercise 37: Symbol Review  
+```python
+del
+with as
+global
+assert
+yield
+try except
+exec
+raise
+finally
+lambda
+
+\a
+\b
+\f
+\n
+\r
+\t
+\v
+
+%d
+%i
+%o
+%u
+%x
+%X
+%e
+%E
+%f
+%F
+%g
+%G
+%c
+%r
+%s
+%%
+
+;
+```
 ### Exercise 38: Doing Things To Lists  
 ### Exercise 39: Dictionaries, Oh Lovely Dictionaries  
 ### Exercise 40: Modules, Classes, And Objects  
 ### Exercise 41: Learning To Speak Object Oriented  
+```python
+random.shuffle()
+random.sample()
+```
 ### Exercise 42: Is-A, Has-A, Objects, and Classes  
 ### Exercise 43: Gothons From Planet Percal #25  
 ### Exercise 44: Inheritance Vs. Composition  
