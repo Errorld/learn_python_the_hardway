@@ -94,6 +94,8 @@ class LaserWeaponArmory(Scene):
         guesses = 0
 
         while guess != code and guesses < 10:
+            if guess == 'hack':
+                print code
             print "BZZZZEDDD!"
             guesses += 1
             guess = raw_input("[keypad]> ")
@@ -161,7 +163,9 @@ class EscapePod(Scene):
 
         good_pod = randint(1,5)
         guess = raw_input("[pod #]> ")
-
+        if guess == 'hack':
+            print good_pod
+            guess = good_pod
 
         if int(guess) != good_pod:
             print "You jump into pod %s and hit the eject button." % guess
