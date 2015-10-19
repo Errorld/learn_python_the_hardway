@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #!coding:utf-8
-from random import randint
+from random import randint, uniform
 
 class fighter(object):
     def __init__(self, name):
@@ -8,11 +8,12 @@ class fighter(object):
         self.atk = randint(1,10)
         self.maxHp = randint(1,100)
         self.curHp = self.maxHp
+        self.luck = 1
     def describe(self):
         return 'My name is %s.\nMy attack is %d.\nMy max hp is %d\nNow I have %d hp' % (self.name, self.atk, self.maxHp, self.curHp)
     def attack(self, enemy):
         if not self.die():
-            enemy.curHp -= self.atk
+            enemy.curHp -= (self.atk+(self.atk*(self.luck+uniform(-2,2)))*0.1)
     def die(self):
         if self.curHp <= 0:
             print "%s died." % self.name
@@ -29,7 +30,7 @@ class engine(object):
                     1.Search for enemies
                     2.Look for items
                     3.Have a rest
-                    4.Do nothing
+                    4.Status
                 """
             choice = raw_input("> ")
             if choice not in ['1','2','3','4']:
@@ -42,10 +43,19 @@ class engine(object):
                 result = battle(player, enemy)
                 if result == 'win':
                     print "you won"
-                    break
+                    continue
                 elif result == 'lose':
                     print "you lost"
-                    break
+                    continue
+                elif result == 'flee':
+                    print "you ran away, coward"
+                    continue
+            if choice == '2':
+                print 'You found nothing'
+            if choice == '3':
+                player.curHp = player.maxHp
+            if choice == '4':
+                print player.describe()
                 
                     
     pass
@@ -59,8 +69,19 @@ def create_enemy():
 
 def battle(player, enemy):
     while True:
-        player.attack(enemy)
-        print player.describe()
+        print """
+        choose your action:
+            1.attack
+            2.flee
+        """
+        choice = raw_input('> ')
+        if choice not in ['1', '2']:
+            continue
+        if choice == '1':
+            player.attack(enemy)
+            print player.describe()
+        if choice == '2':
+            return 'flee'
         enemy.attack(player)
         print enemy.describe()
         raw_input()
