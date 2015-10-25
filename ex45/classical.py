@@ -2,7 +2,18 @@
 #!coding:utf-8
 from random import randint, uniform
 from sys import exit
+import json
 
+
+def fighter2dict(std):
+    return {
+        'name':std.name,
+        'attack':std.attack,
+        'maxHp':std.maxHp,
+        'curHp':std.curHp,
+        'luck':std.luck,
+        'gold':std.gold
+    }
 class Fighter(object):
     def __init__(self, name):
         self.name = name
@@ -12,24 +23,27 @@ class Fighter(object):
         self.luck = 1
         self.gold = self.maxHp +self.atk
     def describe(self):
-        return 'My name is %s.\nMy attack is %d.\nMy max hp is %d\nNow I have %d hp' \
-        % (self.name, self.atk, self.maxHp, self.curHp)
+        return 'My name is %s.\nMy attack is %d.\nMy max hp is %d\nNow I have %d hp. I own %dgold' \
+        % (self.name, self.atk, self.maxHp, self.curHp, self.gold)
     def attack(self, enemy):
         if not self.is_dead():
             value = (self.atk+(self.atk*(self.luck+uniform(-2,2)))*0.1)
             enemy.change_hp(-value)
-            return '%s attacked %s, %dhp reduced. %dhp remains' % (self.name, enemy.name, value, enemy.curHp)
+            return "%s attacked %s, %dhp reduced. %dhp remains" % (self.name, enemy.name, value, enemy.curHp)
     def change_hp(self, value):
         self.curHp += value
         if self.curHp>self.maxHp:
             self.curHp = self.maxHp
         if self.is_dead():  #detect death
             return 'died'
+    def loot(self, enemy):
+        loot_gold = enemy.gold
+        enemy.gold = 0
+        self.gold += loot_gold
+        return "%s robbed %d gold from %s's body" % (self.name, loot_gold, enemy.name)
     def is_dead(self):
         if self.curHp <= 0:
-            print "%s died." % self.name
             return True
-
     def hack(self):
         self.atk = 10
         self.maxHp = 100
@@ -50,9 +64,10 @@ class Battle(Scene):
                 1.attack
                 2.flee
                 3.skill
+                0.fight to the end
             """
             choice = raw_input('> ')
-            if choice not in ['1', '2']:
+            if choice not in ['1', '2', '0']:
                 continue
             if choice == '1':
                 if player.is_dead():
@@ -61,6 +76,10 @@ class Battle(Scene):
                     print player.attack(enemy)
             elif choice == '2':
                 return 'flee'
+            elif choice == '0':
+                while not(player.is_dead() or  enemy.is_dead()):
+                    player.attack(enemy)
+                    enemy.attack(player)
             if enemy.is_dead():
                 return 'win'
             if player.is_dead():
@@ -74,7 +93,9 @@ class Battle(Scene):
         print enemy.describe()
         result = self.battle(player, enemy)
         if result == 'win':
+            print player.loot(enemy)
             print "you won"
+
         elif result == 'lose':
             print "you lost in a battle and you died"
             return 'geme_over'
@@ -83,7 +104,33 @@ class Battle(Scene):
         return 'main_menu'
 
 class Save(Scene):
-    pass
+    def enter(self, player):
+        # print player
+        # print json.dumps(player, default=lambda obj: obj.__dict__)
+        with open('player.save', 'w') as save:
+            j = json.dumps(player, default=lambda obj:obj.__dict__)
+            save.write(json.dumps(j),)
+        print 'save finished in player.save'
+        return 'main_menu'
+class Load(Scene):
+    def enter(self, player):
+        with open('player.save', 'r') as save:
+            json_str = save.read()
+            attrs =  json.loads(json_str)
+            attrs = json.loads(attrs)
+            print attrs
+            print type(attrs)
+            player.name = attrs.get('name')
+            player.atk = attrs['atk']
+            player.maxHp = attrs['maxHp']
+            player.curHp = attrs['curHp']
+            player.luck = attrs['luck']
+            player.gold = attrs['gold']
+        print 'loaded in a strange way'
+        print player.describe()
+        raw_input()
+        return 'main_menu'
+
 class MainMenu(Scene):
     def show_menu(self,player):
         print 'Hello', player.name+':'
@@ -94,12 +141,13 @@ class MainMenu(Scene):
         3.Have a rest
         4.Status
         5.Save
+        6.Load
         0.Exit
         """
     def choose(self,player):
 
         choice = raw_input("> ")
-        if choice not in ['1','2','3','4','5','0','hack']:
+        if choice not in ['1','2','3','4','5','6','0','hack']:
             print "Wrong input, try again"
             return 'main_menu' 
             
@@ -113,6 +161,8 @@ class MainMenu(Scene):
             return 'status'
         if choice == '5':
             return 'save'
+        if choice == '6':
+            return 'load'
         if choice == '0':
             return 'exit'
         if choice == 'hack':
@@ -127,6 +177,7 @@ class MainMenu(Scene):
 class Status(Scene):
     def enter(self, player):
         print player.describe()
+        raw_input()
         return 'main_menu'
     pass
 class Item(Scene):
@@ -135,10 +186,8 @@ class Rest(Scene):
     def enter(self, player):
         player.curHp = player.maxHp
         print 'You had fully rested'
+        raw_input()
         return 'main_menu'
-    pass
-class Save(Scene):
-    pass
 class GameOver(Scene):
     def enter(self, player):
         print 'Game Over'
@@ -156,6 +205,7 @@ class Control(object):
         'status':Status(),
         'rest':Rest(),
         'save':Save(),
+        'load':Load(),
         'exit':Exit()
     }
     def __init__(self, start_scene):
@@ -166,9 +216,12 @@ class Control(object):
         return self.next_scene(self.openning_scene)
 
 class Engine(object):
+    def create_player(self):
+        name = raw_input('tell me your name\n')
+        return Fighter(name)
     def __init__(self, control):
         self.scene_control = control 
-        self.player = create_player()
+        self.player = self.create_player()
     def play(self):
         current_scene = self.scene_control.start_scene() 
         last_scene = self.scene_control.next_scene('exit')
@@ -180,9 +233,6 @@ class Engine(object):
         pass
 
 
-def create_player():
-    name = raw_input('tell me your name\n')
-    return Fighter(name)
 
 if __name__ == '__main__':
     control = Control('main_menu')
