@@ -118,21 +118,24 @@ class Save(Scene):
 class Load(Scene):
 
     def enter(self, player):
-        with open('player.save', 'r') as save:
-            json_str = save.read()
-            attrs =  json.loads(json_str)
-            attrs = json.loads(attrs)
-            print attrs
-            print type(attrs)
-            player.name = attrs.get('name')
-            player.atk = attrs['atk']
-            player.maxHp = attrs['maxHp']
-            player.curHp = attrs['curHp']
-            player.luck = attrs['luck']
-            player.gold = attrs['gold']
-        print 'loaded in a strange way'
-        print player.describe()
-        raw_input()
+	try:
+            with open('player.save', 'r') as save:
+                json_str = save.read()
+                attrs =  json.loads(json_str)
+                attrs = json.loads(attrs)
+                print attrs
+                print type(attrs)
+                player.name = attrs.get('name')
+                player.atk = attrs['atk']
+                player.maxHp = attrs['maxHp']
+                player.curHp = attrs['curHp']
+                player.luck = attrs['luck']
+                player.gold = attrs['gold']
+            print 'loaded in a strange way'
+            print player.describe()
+            raw_input()
+	except Exception as e:
+            print e, "load error"    
         return 'main_menu'
 
 class MainMenu(Scene):
